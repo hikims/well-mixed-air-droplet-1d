@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+make figure5 USE_TBB="${USE_TBB:-1}" THREADS="${THREADS:-8}" \
+    FIG5_S0="${FIG5_S0:-0.125}" \
+    FIG5_OPEN_TIME="${FIG5_OPEN_TIME:-40.0}" \
+    FIG5_CLOSE_TIME="${FIG5_CLOSE_TIME:-40.0}" \
+    FIG5_REOPEN_TIME="${FIG5_REOPEN_TIME:-40.0}" \
+    FIG5_SAVE_EVERY="${FIG5_SAVE_EVERY:-20}"

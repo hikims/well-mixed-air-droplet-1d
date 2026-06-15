@@ -1,0 +1,56 @@
+# Build artifacts
+bin/
+build/
+*.o
+*.out
+*.a
+*.so
+*.dylib
+
+# Generated simulation data
+data/generated/
+data/tmp/
+opendata/
+closedata/
+reopendata/
+figure1_data/
+figure2_data/
+figure3_data/
+figure4_data/
+figure5_data/
+figure6_data/
+figure7_data/
+defense_data/
+hlambda_data/
+logs/
+
+# Generated figures; keep final exported figures only if intentionally committed
+figures/tmp/
+figure/
+*.pdf_tex
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# macOS / editors
+.DS_Store
+*.swp
+*.swo
+.vscode/*
+!.vscode/settings.example.json
+
+# LaTeX byproducts
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.spl
+*.synctex.gz
+*.fls
+*.fdb_latexmk

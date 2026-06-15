@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "Well-mixed-air reduction for self-propelled droplets"
+message: "If you use this code, please cite the associated manuscript."
+type: software
+authors:
+  - family-names: Kim
+    given-names: Minsoo
+  - family-names: Nagayama
+    given-names: Masaharu
+repository-code: "https://github.com/hikims/well-mixed-air-droplet-1d"
+license: MIT
+version: 1.0.0
+date-released: 2026-06-15

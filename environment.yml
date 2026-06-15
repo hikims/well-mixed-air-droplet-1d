@@ -1,0 +1,11 @@
+name: droplet1d
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - tbb
+  - compilers
