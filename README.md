@@ -3,11 +3,11 @@
 
 This repository contains simulation and plotting code for the manuscript
 
-**A well-mixed-air reduction of a one-dimensional reaction--diffusion particle model for self-propelled oil droplets**
+**A well-mixed-air reduction to a one-dimensional reaction--diffusion particle model for self-propelled oil droplets**
 
 by Minsoo Kim and Masaharu Nagayama.
 
-The code reproduces the single-droplet phase diagram, representative trajectories, chemical profiles, surface-tension imbalance diagnostics, cover-protocol simulation, perturbation-activity test, and supplementary robustness checks.
+The code reproduces the single-droplet phase diagram, representative trajectories, chemical profiles, surface-tension imbalance diagnostics, cover-protocol simulation, the direct odd-sector Hopf-root calculation H(lambda)=1, the IMEX time-step stability analysis, the grid-aligned nonlinear validation near onset, and the supplementary robustness checks.
 
 ## Repository status
 
@@ -54,19 +54,23 @@ make distclean     # remove binaries, generated data, logs, and generated figure
 Individual main figures can be regenerated with:
 
 ```bash
-make figure1       # phase diagram
-make figure2       # representative trajectories
-make figure3       # representative chemical profiles
-make figures4_5    # oscillatory and rotating surface-tension imbalance
-make figure6       # cover protocol
-make figure7       # perturbation activity near transition
+make figure1       # phase diagram                         (manuscript Fig. 2)
+make figure2       # representative trajectories            (manuscript Fig. 3)
+make figure3       # representative chemical profiles       (manuscript Fig. 4)
+make figures4_5    # surface-tension imbalance              (manuscript Figs. 5-6)
+make figure6       # cover protocol                         (manuscript Fig. 7, Fig. S1)
+make hopf          # odd-sector Hopf roots + IMEX stability (manuscript Fig. 9, S2-S3, Tables S1-S2)
+make grid_aligned  # grid-aligned validation, after 'make hopf' (manuscript Fig. 8, S4-S6)
 ```
+
+Internal `figureN` target numbers predate the final manuscript numbering
+(the manuscript's Fig. 1 is a schematic with no associated code); the
+manuscript mapping in parentheses above is authoritative.
 
 Long runs can also be launched in the background:
 
 ```bash
 make figure1_bg
-make figure7_bg
 ```
 
 ## Main outputs
@@ -85,17 +89,21 @@ data/generated/
 data/processed/
 ```
 
-The manuscript currently uses the following main figure files:
+The final manuscript uses the following figure files:
 
-| Figure | File                                                                                                     |
-| ------ | -------------------------------------------------------------------------------------------------------- |
-| Fig. 1 | `figures/main/figure1_phase_diagram.eps`                                                                 |
-| Fig. 2 | `figures/main/figure2_representative_trajectories_compact.eps`                                           |
-| Fig. 3 | `figures/main/figure3_representative_profiles_compact.eps`, `figures/main/figure3_sds_profiles_zoom.eps` |
-| Fig. 4 | `figures/main/figure4_oscillatory_surface_tension_detail.eps`                                            |
-| Fig. 5 | `figures/main/figure4_rotating_surface_tension_detail.eps`                                               |
-| Fig. 6 | `figures/main/figure5_cover_protocol_clean.eps`                                                          |
-| Fig. 7 | `figures/main/figure6_activity_onset.eps`                                                                |
+| Manuscript item | File |
+| --- | --- |
+| Fig. 2 (phase diagram) | `figures/main/figure1_phase_diagram.eps` |
+| Fig. 3 (trajectories) | `figures/main/figure2_representative_trajectories_compact.eps` |
+| Fig. 4 (chemical profiles) | `figures/main/figure3_representative_profiles_compact.eps`, `figures/main/figure3_sds_profiles_zoom.eps` |
+| Fig. 5 (oscillatory imbalance) | `figures/main/figure4_oscillatory_surface_tension_detail.eps` |
+| Fig. 6 (rotating imbalance) | `figures/main/figure4_rotating_surface_tension_detail.eps` |
+| Fig. 7 (cover protocol) | `figures/main/figure5_cover_protocol_clean.eps` |
+| Fig. 8, Figs. S4-S6 (grid-aligned onset) | `figures/supplement/grid_aligned/` |
+| Fig. 9, Figs. S2-S3 (Hopf roots, time-step shift) | `results/figures/` |
+| Fig. S1 (cover-stage profiles) | cover-protocol stage profiles from `make figure6` |
+| Figs. S7-S8 (grid refinement, cover leakage) | `figures/supplement/` via `make supplement` |
+| Tables S1-S2 | `results/critical_points.csv`, `results/time_step_stability.csv` |
 
 ## Repository layout
 
@@ -114,10 +122,13 @@ The manuscript currently uses the following main figure files:
 │   ├── figure2_trajectories.cpp
 │   ├── figure4_surface_tension.cpp
 │   ├── figure5_cover_protocol.cpp
-│   ├── figure6_perturbation_activity.cpp
+│   ├── grid_aligned_validation.cpp
+│   ├── hopf_solver.py
+│   ├── imex_stability.py
 │   ├── supplement_defense_batch.cpp
 │   ├── supplement_oscillatory_cycle.cpp
 │   └── legacy/
+│       ├── figure6_perturbation_activity.cpp   # superseded half-grid perturbation test
 │       ├── amplitude_lu.cpp
 │       ├── close_lu.cpp
 │       ├── open_lu.cpp
@@ -130,14 +141,17 @@ The manuscript currently uses the following main figure files:
 │   ├── plot_figure3_representative_profiles.py
 │   ├── plot_figure4_5_surface_tension.py
 │   ├── plot_figure6_cover_protocol.py
-│   ├── plot_figure7_perturbation_activity.py
+│   ├── analyze_grid_aligned_validation.py
 │   ├── plot_supplement_robustness_checks.py
 │   ├── run_figure1_phase_diagram.sh
 │   ├── run_figure2_representative_trajectories.sh
 │   ├── run_figure3_representative_profiles.sh
 │   ├── run_figure4_5_surface_tension.sh
 │   ├── run_figure6_cover_protocol.sh
-│   ├── run_figure7_perturbation_activity.sh
+│   ├── run_grid_aligned_validation.sh
+│   ├── run_hopf_scan.py
+│   ├── run_time_step_stability.py
+│   ├── plot_hopf_results.py
 │   └── run_supplement_robustness_checks.sh
 ├── data/
 │   ├── README.md

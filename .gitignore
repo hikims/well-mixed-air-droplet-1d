@@ -54,3 +54,6 @@ venv/
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+
+# Hopf analysis outputs
+results/

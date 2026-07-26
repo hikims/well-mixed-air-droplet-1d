@@ -71,11 +71,11 @@ FIG1_BIN := $(BIN_DIR)/figure1_phase_diagram
 FIG2_BIN := $(BIN_DIR)/figure2_trajectories
 FIG45_BIN := $(BIN_DIR)/figure4_surface_tension
 FIG6_BIN := $(BIN_DIR)/figure5_cover_protocol
-FIG7_BIN := $(BIN_DIR)/figure6_perturbation_activity
+GRID_BIN := $(BIN_DIR)/grid_aligned_validation
 SUPP_DEFENSE_BIN := $(BIN_DIR)/supplement_defense_batch
 SUPP_CYCLE_BIN := $(BIN_DIR)/supplement_oscillatory_cycle
 
-MAIN_BINS := $(FIG1_BIN) $(FIG2_BIN) $(FIG45_BIN) $(FIG6_BIN) $(FIG7_BIN)
+MAIN_BINS := $(FIG1_BIN) $(FIG2_BIN) $(FIG45_BIN) $(FIG6_BIN)
 SUPP_BINS := $(SUPP_DEFENSE_BIN)
 
 # -----------------------------------------------------------------------------
@@ -116,16 +116,9 @@ FIG6_REOPEN_TIME ?= 40.0
 FIG6_SAVE_EVERY ?= 20
 
 # -----------------------------------------------------------------------------
-# Figure 7: perturbation activity
+# Grid-aligned validation (manuscript Fig. 8, Supplementary Figs. S4-S6)
+# Protocol parameters live in scripts/run_grid_aligned_validation.sh.
 # -----------------------------------------------------------------------------
-FIG7_OUT ?= $(DATA_DIR)/figure7_perturbation_activity_data
-FIG7_SMIN ?= 0.085
-FIG7_SMAX ?= 0.120
-FIG7_DS ?= 0.001
-FIG7_RELAX ?= 80.0
-FIG7_FREE ?= 80.0
-FIG7_SAVE_EVERY ?= 20
-FIG7_EPS ?= 0.001
 
 # -----------------------------------------------------------------------------
 # Supplementary robustness checks
@@ -138,7 +131,7 @@ SUPP_OUT ?= $(DATA_DIR)/supplement_robustness_data
         figure3 figure3_plot \
         figures4_5 figures4_5_data figures4_5_plot \
         figure6 figure6_data figure6_plot \
-        figure7 figure7_data figure7_plot figure7_bg \
+        grid_aligned hopf hopf_scan hopf_timestep hopf_plots \
         supplement_defense supplement_cycle \
         check-python check-names clean clean-data distclean
 
@@ -151,7 +144,8 @@ help:
 	@echo "  make figure3                     reproduce representative profiles"
 	@echo "  make figures4_5                  reproduce surface-tension figures"
 	@echo "  make figure6                     reproduce cover protocol"
-	@echo "  make figure7                     reproduce perturbation activity"
+	@echo "  make hopf                        odd-sector Hopf roots + IMEX time-step stability"
+	@echo "  make grid_aligned                grid-aligned validation (run after make hopf)"
 	@echo "  make supplement                  run supplementary robustness checks"
 	@echo "  make check-python                syntax-check Python scripts"
 	@echo "  make check-names                 check for old file-name references"
@@ -196,7 +190,7 @@ $(FIG45_BIN): $(SRC_DIR)/figure4_surface_tension.cpp $(COMMON_DEPS) | dirs
 $(FIG6_BIN): $(SRC_DIR)/figure5_cover_protocol.cpp $(COMMON_DEPS) | dirs
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -o $@ $(LDFLAGS) $(LDLIBS)
 
-$(FIG7_BIN): $(SRC_DIR)/figure6_perturbation_activity.cpp $(COMMON_DEPS) | dirs
+$(GRID_BIN): $(SRC_DIR)/grid_aligned_validation.cpp $(COMMON_DEPS) | dirs
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(SUPP_DEFENSE_BIN): $(SRC_DIR)/supplement_defense_batch.cpp $(COMMON_DEPS) | dirs
@@ -252,22 +246,26 @@ figure6_plot: | dirs
 
 figure6: figure6_data figure6_plot
 
-figure7_data: $(FIG7_BIN) | dirs
-	$(FIG7_BIN) $(FIG7_OUT) $(FIG7_SMIN) $(FIG7_SMAX) $(FIG7_DS) $(FIG7_RELAX) $(FIG7_FREE) $(DT) $(FIG7_SAVE_EVERY) $(THREADS) $(FIG7_EPS)
+# Grid-aligned validation. Requires 'make hopf' first for the reference CSVs.
+grid_aligned: $(GRID_BIN) | dirs
+	bash $(SCRIPTS_DIR)/run_grid_aligned_validation.sh
 
-figure7_plot: | dirs
-	python3 $(SCRIPTS_DIR)/plot_figure7_perturbation_activity.py $(FIG7_OUT) $(FIG_MAIN_DIR)
+# -----------------------------------------------------------------------------
+# Odd-sector Hopf analysis (manuscript Fig. 9, Figs. S2-S3, Tables S1-S2)
+# Pure Python/SciPy; outputs are written to results/.
+# -----------------------------------------------------------------------------
+hopf_scan: | dirs
+	python3 $(SCRIPTS_DIR)/run_hopf_scan.py
 
-figure7: figure7_data figure7_plot
+hopf_timestep: | dirs
+	python3 $(SCRIPTS_DIR)/run_time_step_stability.py
 
-figure7_bg: $(FIG7_BIN) | dirs
-	@LOG=$(LOG_DIR)/figure7_perturbation_$$(date +%Y%m%d_%H%M%S).log; \
-	echo "Starting Figure 7 perturbation sweep in background"; \
-	echo "Log file: $$LOG"; \
-	(nohup bash -lc '$(MAKE) figure7 THREADS=$(THREADS) FIG7_SMIN=$(FIG7_SMIN) FIG7_SMAX=$(FIG7_SMAX) FIG7_DS=$(FIG7_DS) FIG7_RELAX=$(FIG7_RELAX) FIG7_FREE=$(FIG7_FREE) FIG7_EPS=$(FIG7_EPS)' > $$LOG 2>&1 & echo $$! > $(LOG_DIR)/figure7.pid); \
-	echo "PID saved to $(LOG_DIR)/figure7.pid"
+hopf_plots: | dirs
+	python3 $(SCRIPTS_DIR)/plot_hopf_results.py
 
-figures: figure1 figure2 figure3 figures4_5 figure6 figure7
+hopf: hopf_scan hopf_timestep hopf_plots
+
+figures: figure1 figure2 figure3 figures4_5 figure6
 
 # -----------------------------------------------------------------------------
 # Supplementary material

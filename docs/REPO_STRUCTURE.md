@@ -42,3 +42,12 @@ well-mixed-air-droplet-1d/
     ├── DATA_DICTIONARY.md
     └── GITHUB_UPLOAD_CHECKLIST.md
 ```
+
+## Revision additions (2026-07)
+
+The revision adds three workflows: the odd-sector Hopf-root calculation
+(src/hopf_solver.py, src/imex_stability.py; scripts/run_hopf_scan.py,
+scripts/run_time_step_stability.py, scripts/plot_hopf_results.py), the
+grid-aligned nonlinear validation (src/grid_aligned_validation.cpp;
+scripts/run_grid_aligned_validation.sh, scripts/analyze_grid_aligned_validation.py),
+and retires the half-grid perturbation test to src/legacy/ and scripts/legacy/.
