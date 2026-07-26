@@ -1,4 +1,3 @@
-````markdown
 # Well-mixed-air reduction for self-propelled droplets
 
 This repository contains simulation and plotting code for the manuscript
@@ -35,7 +34,7 @@ make figures
 
 # Run supplementary robustness checks
 make supplement
-````
+```
 
 ## Main Makefile targets
 
@@ -191,19 +190,6 @@ The supplementary robustness checks include grid refinement, time-step refinemen
 
 The `src/legacy/` directory contains earlier single-purpose drivers used during model development. These files are not required to reproduce the final manuscript figures, but are retained for transparency.
 
-## Data availability statement for manuscript
-
-After creating the GitHub repository, replace the manuscript data availability statement with:
-
-```latex
-The simulation code, plotting scripts, and processed data needed to reproduce the figures in this paper are openly available at \url{https://github.com/hikims/well-mixed-air-droplet-1d}.
-```
-
-Replace the URL if you choose a different repository name.
-
 ## License
 
-See `LICENSE`. Confirm the license with all coauthors before public release.
-
-```
-```
+Released under the MIT License; see `LICENSE`.
