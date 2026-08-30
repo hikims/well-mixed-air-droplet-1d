@@ -2,7 +2,7 @@
 
 This repository contains simulation and plotting code for the manuscript
 
-**A well-mixed-air reduction to a one-dimensional reaction--diffusion particle model for self-propelled oil droplets**
+**Well-mixed-air reduction and odd-sector Hopf-type instability in a reaction--diffusion particle model for self-propelled oil droplets**
 
 by Minsoo Kim and Masaharu Nagayama.
 
